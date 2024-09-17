@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "tsanghan-ce6" {
 
   container_definitions = jsonencode([
     {
-      name  = "python-app"
+      name  = "hello-app"
       image = var.container_image
 
       cpu       = 256
