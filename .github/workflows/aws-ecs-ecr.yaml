@@ -51,7 +51,7 @@ jobs:
         REGISTRY_ALIAS: ${{ vars.REGISTRY_ALIAS }}
         ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
       run: |
-        cd app
+        cd app/node
         docker build -t $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
         # aws ecr-public create-repository --repository-name tsanghan-ce6/hello-app --region us-east-1
         docker push $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
