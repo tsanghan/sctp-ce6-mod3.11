@@ -132,9 +132,9 @@ resource "aws_ecs_task_definition" "tsanghan-ce6" {
         logDriver = "awslogs"
         options = {
           awslogs-create-group  = "true"
-          awslogs-group         = "awslogs-hello-app"
+          awslogs-group         = "/aws/ecs/tsanghan-ce6-hello-app"
           awslogs-region        = "ap-southeast-1"
-          awslogs-stream-prefix = "ecs-awslogs"
+          awslogs-stream-prefix = "tsanghan-ce6"
         }
       }
     }
