@@ -66,14 +66,39 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   tags = local.common_tags
 }
 
-data "aws_iam_policy" "AmazonECSTaskExecutionRolePolicy" {
-  name = "AmazonECSTaskExecutionRolePolicy"
+# data "aws_iam_policy" "AmazonECSTaskExecutionRolePolicy" {
+#   name = "AmazonECSTaskExecutionRolePolicy"
+# }
+
+resource "aws_iam_policy" "CustomECSTaskExecutionRolePolicy" {
+  name = "CustomECSTaskExecutionRolePolicy"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
 }
 
-resource "aws_iam_policy_attachment" "AmazonECSTaskExecutionRolePolicy-attach" {
-  name       = "AmazonECSTaskExecutionRolePolicy-attachment"
+resource "aws_iam_policy_attachment" "CustomECSTaskExecutionRolePolicy-attach" {
+  name       = "CustomECSTaskExecutionRolePolicy-attachment"
   roles      = [aws_iam_role.ecs_task_execution_role.name]
-  policy_arn = data.aws_iam_policy.AmazonECSTaskExecutionRolePolicy.arn
+  policy_arn = data.aws_iam_policy.CustomECSTaskExecutionRolePolicy.arn
 
 }
 
