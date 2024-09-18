@@ -54,7 +54,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Run installation of dependencies commands
-        run: npm install
+        run: |
+          cd app/node
+          npm install
       - name: Run unit testing command
         run: |
           cd app/node
