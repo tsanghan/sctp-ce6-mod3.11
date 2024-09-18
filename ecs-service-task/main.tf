@@ -38,6 +38,15 @@ resource "aws_security_group" "allow_sg" {
   }
 }
 
+data "aws_iam_policy" "ecs_task_execution_role_policy" {
+  name = "AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role" "ecs_tsak_execution_role" {
+  name               = "tsanghan-ce6-ecs-task-execution-role"
+  assume_role_policy = data.aws_iam_policy.ecs_task_execution_role_policy.policy
+}
+
 data "aws_ecs_cluster" "tsanghan-ce6" {
   cluster_name = "tsanghan-ce6-ecs-cluster"
 }
@@ -48,6 +57,7 @@ resource "aws_ecs_task_definition" "tsanghan-ce6" {
   network_mode             = "awsvpc"
   cpu                      = 256
   memory                   = 512
+  execution_role_arn = aws_iam_role.ecs_tsak_execution_role.arn
 
   container_definitions = jsonencode([
     {
