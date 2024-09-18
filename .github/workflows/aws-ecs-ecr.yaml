@@ -119,7 +119,7 @@ jobs:
     - name: Tofu Format
       run: |
         cd ecs-service-task
-        tofu fmt -check -resursive
+        tofu fmt -check -recursive
 
     # Validate that all Terraform configuration files
     - name: Tofu Validate
