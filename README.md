@@ -35,10 +35,10 @@ Key ID and Access Key are set with the following command template.
 ```
 Replace `SOME_NAME` and `SOME_VALUE` accordingly.
 
-# Infrastructure
+## Infrastructure
 AWS ECS Cluster is create first manually. The Terraform/OpenTofu configuration files in the [`ecs-cluster`](https://github.com/tsanghan/sctp-ce6-mod3.11/tree/main/ecs-cluster) directory.
 
-# ECS Service & Task deploymwnt with Application
+## ECS Service & Task deploymwnt with Application
 The ECS Service & Task Terraform/OpenTofu configuration files are in [`ecs-service-task`](https://github.com/tsanghan/sctp-ce6-mod3.11/tree/main/ecs-service-task) directory. This is managed by GitHub Action workflow [`aws-ecs-ecr.yaml`](https://github.com/tsanghan/sctp-ce6-mod3.11/blob/main/.github/workflows/aws-ecs-ecr.yaml)
 
 The application is written in `Nodejs` and is in the [`app/node`](https://github.com/tsanghan/sctp-ce6-mod3.11/tree/main/app/node).
