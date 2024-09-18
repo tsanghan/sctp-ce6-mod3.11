@@ -98,7 +98,7 @@ resource "aws_iam_policy" "CustomECSTaskExecutionRolePolicy" {
 resource "aws_iam_policy_attachment" "CustomECSTaskExecutionRolePolicy-attach" {
   name       = "CustomECSTaskExecutionRolePolicy-attachment"
   roles      = [aws_iam_role.ecs_task_execution_role.name]
-  policy_arn = data.aws_iam_policy.CustomECSTaskExecutionRolePolicy.arn
+  policy_arn = aws_iam_policy.CustomECSTaskExecutionRolePolicy.arn
 
 }
 
