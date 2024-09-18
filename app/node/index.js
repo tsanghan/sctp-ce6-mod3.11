@@ -19,15 +19,17 @@ const ENV = 'DEV';
 const app = express();
 app.get('/', (req, res) => {
   res.statusCode = 200;
-  const msg = 'Hello from Node 4!';
+  const msg = 'Hello from Node 4! For SCTP-CE6-Mod3.11';
   res.send(msg);
 });
 
 app.get('/test', (req, res) => {
   res.statusCode = 200;
-  const msg = 'Hello from /test Node!';
+  const msg = 'Hello from /test Node! For SCTP-CE6-Mod3.11';
   res.send(msg);
 });
 
-app.listen(PORT, HOST);
+const server = app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
+
+module.exports = { app, server };

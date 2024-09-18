@@ -38,6 +38,70 @@ resource "aws_security_group" "allow_sg" {
   }
 }
 
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "tsanghan-ce6-ecsTaskExecutionRole"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : [
+            "ecs-tasks.amazonaws.com"
+          ]
+        },
+        "Action" : "sts:AssumeRole",
+        "Condition" : {
+          "ArnLike" : {
+            "aws:SourceArn" : "arn:aws:ecs:ap-southeast-1:255945442255:*"
+          },
+          "StringEquals" : {
+            "aws:SourceAccount" : "255945442255"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = local.common_tags
+}
+
+# data "aws_iam_policy" "AmazonECSTaskExecutionRolePolicy" {
+#   name = "AmazonECSTaskExecutionRolePolicy"
+# }
+
+resource "aws_iam_policy" "CustomECSTaskExecutionRolePolicy" {
+  name = "CustomECSTaskExecutionRolePolicy"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_policy_attachment" "CustomECSTaskExecutionRolePolicy-attach" {
+  name       = "CustomECSTaskExecutionRolePolicy-attachment"
+  roles      = [aws_iam_role.ecs_task_execution_role.name]
+  policy_arn = aws_iam_policy.CustomECSTaskExecutionRolePolicy.arn
+
+}
+
 data "aws_ecs_cluster" "tsanghan-ce6" {
   cluster_name = "tsanghan-ce6-ecs-cluster"
 }
@@ -48,6 +112,7 @@ resource "aws_ecs_task_definition" "tsanghan-ce6" {
   network_mode             = "awsvpc"
   cpu                      = 256
   memory                   = 512
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
@@ -60,9 +125,18 @@ resource "aws_ecs_task_definition" "tsanghan-ce6" {
       portMappings = [
         {
           containerPort = 8080
-        #   hostPort      = 8080
+          hostPort      = 8080
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-create-group  = "true"
+          awslogs-group         = "/aws/ecs/tsanghan-ce6-hello-app"
+          awslogs-region        = "ap-southeast-1"
+          awslogs-stream-prefix = "tsanghan-ce6"
+        }
+      }
     }
   ])
 }
