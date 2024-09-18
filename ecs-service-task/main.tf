@@ -41,30 +41,29 @@ resource "aws_security_group" "allow_sg" {
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "tsanghan-ce6-ecsTaskExecutionRole"
   assume_role_policy = jsonencode({
-    "Version":"2012-10-17",
-    "Statement":[
-        {
-          "Effect":"Allow",
-          "Principal":{
-              "Service":[
-                "ecs-tasks.amazonaws.com"
-              ]
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : [
+            "ecs-tasks.amazonaws.com"
+          ]
+        },
+        "Action" : "sts:AssumeRole",
+        "Condition" : {
+          "ArnLike" : {
+            "aws:SourceArn" : "arn:aws:ecs:ap-southeast-1:255945442255:*"
           },
-          "Action":"sts:AssumeRole",
-          "Condition":{
-              "ArnLike":{
-              "aws:SourceArn":"arn:aws:ecs:ap-southeast-1:255945442255:*"
-              },
-              "StringEquals":{
-                "aws:SourceAccount":"255945442255"
-              }
+          "StringEquals" : {
+            "aws:SourceAccount" : "255945442255"
           }
         }
+      }
     ]
   })
 
   tags = local.common_tags
-
 }
 
 data "aws_iam_policy" "AmazonECSTaskExecutionRolePolicy" {
@@ -75,6 +74,7 @@ resource "aws_iam_policy_attachment" "AmazonECSTaskExecutionRolePolicy-attach" {
   name       = "AmazonECSTaskExecutionRolePolicy-attachment"
   roles      = [aws_iam_role.ecs_task_execution_role.name]
   policy_arn = data.aws_iam_policy.AmazonECSTaskExecutionRolePolicy.arn
+
 }
 
 data "aws_ecs_cluster" "tsanghan-ce6" {
