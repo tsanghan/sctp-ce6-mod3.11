@@ -60,7 +60,7 @@ resource "aws_ecs_task_definition" "tsanghan-ce6" {
       portMappings = [
         {
           containerPort = 8080
-        #   hostPort      = 8080
+          #   hostPort      = 8080
         }
       ]
     }
