@@ -18,9 +18,52 @@ permissions:
   contents: read
 
 jobs:
+  pre-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event"
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+  install-dependencies:
+    runs-on: ubuntu-latest
+    needs: pre-deploy
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Run installation of dependencies commands
+        run: |
+          cd app/node
+          npm install
+
+  npm-audit:
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Run Scanning of Dependencies Commands
+        run: |
+          cd app/node
+          npm audit
+
+  code-unit-testing:
+    runs-on: ubuntu-latest
+    needs: npm-audit
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Run installation of dependencies commands
+        run: npm install
+      - name: Run unit testing command
+        run: |
+          cd app/node
+          npm test
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    needs: code-unit-testing
     environment: dev
 
     steps:
@@ -51,7 +94,7 @@ jobs:
         REGISTRY_ALIAS: ${{ vars.REGISTRY_ALIAS }}
         ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
       run: |
-        cd app/python
+        cd app/node
         docker build -t $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
         # aws ecr-public create-repository --repository-name tsanghan-ce6/hello-app --region us-east-1
         docker push $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
@@ -74,7 +117,7 @@ jobs:
     - name: Tofu Format
       run: |
         cd ecs-service-task
-        tofu fmt
+        tofu fmt -check -resursive
 
     # Validate that all Terraform configuration files
     - name: Tofu Validate
