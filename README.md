@@ -36,7 +36,7 @@ Key ID and Access Key are set with the following command template.
 Replace `SOME_NAME` and `SOME_VALUE` accordingly.
 
 ## Infrastructure
-AWS ECS Cluster is create first manually. The Terraform/OpenTofu configuration files in the [`ecs-cluster`](https://github.com/tsanghan/sctp-ce6-mod3.11/tree/main/ecs-cluster) directory.
+AWS ECS Cluster is create first manually. The Terraform/OpenTofu configuration files are in the [`ecs-cluster`](https://github.com/tsanghan/sctp-ce6-mod3.11/tree/main/ecs-cluster) directory.
 
 ## ECS Service & Task deploymwnt with Application
 The ECS Service & Task Terraform/OpenTofu configuration files are in [`ecs-service-task`](https://github.com/tsanghan/sctp-ce6-mod3.11/tree/main/ecs-service-task) directory. This is managed by GitHub Action workflow [`aws-ecs-ecr.yaml`](https://github.com/tsanghan/sctp-ce6-mod3.11/blob/main/.github/workflows/aws-ecs-ecr.yaml)
@@ -59,9 +59,9 @@ On `push` to `dev` environment, GitHub Action workflow in the file `aws-ecs-ecr.
 
 are done as part of CI.
 
-Finally, a `deployment` is done as the last `job` os the workflow;
+Finally, a `deployment` is done as the last `job` of the workflow;
 
-5) a `Nodejs` application `Docker` image is created and pushed to AWS ECR public registory in a precreated repository
+5) a `Nodejs` application `Docker` image is created and pushed to AWS ECR public registory in a precreated repository by the manually invoked Infrastructure step above.
 6) a `ECS Task Definition` defined in the Terraform/OpenTofu configuration file is send via Terraform/OpenTofu command to AWS in the pipeline, to deploy the containerizaed Nodejs Application.
 
-Finally, extra configuration is done to enable container logs being captured and send to `CloudWatch`.
+Finally, extra configuration is done to enable container logs, captured and send to a centralized log collecting platform, i.e.`CloudWatch`.
