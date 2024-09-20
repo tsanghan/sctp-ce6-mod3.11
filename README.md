@@ -45,7 +45,7 @@ The application is written in `Nodejs` and is in the [`app/node`](https://github
 
 Unit tests with `Jest` is also written as part of the CI process.
 
-There is an anternative application written in `Python`, however, as per assigment reequirement, `Nodejs` is required.
+There is an alternative application written in `Python`, however, as per assigment reequirement, `Nodejs` is required.
 As such, no unit tests for `Python` applicaiton is written and GitHub Action workflow is tuned for `Nodejs` application.
 
 On `push` to `dev` environment, GitHub Action workflow in the file `aws-ecs-ecr.yaml` will kick off. A CI pipeline is implemented as shown below,
@@ -54,7 +54,7 @@ On `push` to `dev` environment, GitHub Action workflow in the file `aws-ecs-ecr.
 
 1) `pre-deploy`
 2) `install-dependencies`
-3) `npm-audit`
+3) `npm-audit`tofu p
 4) `code-unit-testing`
 
 are done as part of CI.
